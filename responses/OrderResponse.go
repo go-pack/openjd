@@ -72,7 +72,6 @@ type UnionOpenOrderQueryContent struct {
 func NewUnionOpenOrderQueryResponse(content []byte) *OrderResponse {
 	response := &UnionOpenOrderQueryContent{}
 	json.Unmarshal(content, response)
-	println(response.QueryResp.Result)
 	respResult := &OrderResponse{}
 	if response.QueryResp.Code == 0 {
 		json.Unmarshal([]byte(response.QueryResp.Result),respResult)
