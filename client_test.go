@@ -24,10 +24,10 @@ func TestClient(t *testing.T) {
 	session := ""
 	topClient := openjd.NewJdClient(viper.GetString("APP_JD_KEY") , viper.GetString("APP_JD_SECRET") )
 	request := requests.NewJdUnionOpenOrderRequest()
-	request.SetTime("2018092018")
+	request.SetTime("201905141335")
 	request.SetPageNo(1);
 	request.SetPageSize(30);
-	request.SetType(3);
+	request.SetType(1);
 	request.SetKey("");
 
 	content, err := topClient.Execute(request, session)
@@ -35,7 +35,8 @@ func TestClient(t *testing.T) {
 		println(err.Error())
 		return
 	}
-	println(string(content))
-	resp := responses.NewUnionOpenOrderQueryResponse(content)
-	println(resp.RequestId)
+	result := responses.NewUnionOpenOrderQueryResponse(content)
+	for _, value := range result.Resp[0].SkuList {
+		println(value.SkuName)
+	}
 }

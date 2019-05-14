@@ -3,13 +3,8 @@ package responses
 import (
 	"encoding/json"
 )
+type SkuInfo struct {
 
-type OrderResponse struct {
-	BaseResponse
-	FinishTime uint64 `json:"finishTime"`
-	OrderId uint64 `json:"orderId"`
-	OrderTime uint64 `json:"orderTime"`
-	ParentId uint64 `json:"parentId"`
 	//实际计算佣金的金额。订单完成后，会将误扣除的运费券金额更正。如订单完成后发生退款，此金额会更新。
 	ActualCosPrice float32 `json:"actualCosPrice"`
 	//推客获得的实际佣金（实际计佣金额*佣金比例*最终比例）。如订单完成后发生退款，此金额会更新。
@@ -43,12 +38,25 @@ type OrderResponse struct {
 	UnionTag string `json:"unionTag"`
 	//自定义参数 子联盟ID(需要联系运营开放白名单才能拿到数据)
 	SubUnionId string `json:"subUnionId"`
+}
+type OrderResponse struct {
+	FinishTime uint64 `json:"finishTime"`
+	OrderEmt int `json:"orderEmt"`
+	OrderId uint64 `json:"orderId"`
+	OrderTime uint64 `json:"orderTime"`
+	ParentId uint64 `json:"parentId"`
 	//订单行维度预估结算时间（格式：yyyyMMdd） ，0：未结算。订单&quot;预估结算时间&quot;仅供参考。账号未通过资质审核或订单发生售后，会影响订单实际结算时间。
 	PayMonth string `json:"payMonth"`
-	//推客生成推广链接时传入的扩展字段（需要联系运营开放白名单才能拿到数据）。&lt;订单行维度&gt;
-	Ext1 string `json:"ext1"`
+	//商家ID
+	PopId uint64 `json:"popId"`
+
+	SkuList []SkuInfo `json:"skuList"`
+
+
 	//推客的联盟ID
 	UnionId string `json:"unionId"`
+	//推客生成推广链接时传入的扩展字段（需要联系运营开放白名单才能拿到数据）。&lt;订单行维度&gt;
+	Ext1 string `json:"ext1"`
 	//sku维度的有效码
 	// （-1：未知,2.无效-拆单,3.无效-取消,4.无效-京东帮帮主订单,5.无效-账号异常,6.无效-赠品类目不返佣
 	// 7.无效-校园订单,8.无效-企业订单,9.无效-团购订单,10.无效-开增值税专用发票订单,11.无效-乡村推广员下单
@@ -56,10 +64,12 @@ type OrderResponse struct {
 	// ）
 	// 注：自2018/7/13起，自己推广自己下单已经允许返佣，故12无效码仅针对历史数据有效
 	ValidCode int `json:"validCode"`
+	HasMore bool `json:"hasMore"`
 
 }
 type OrderResponseResult struct {
-	Resp OrderResponse `json:"data"`
+	BaseResponse
+	Resp []OrderResponse `json:"data"`
 }
 type UnionOpenOrderQueryResponse struct {
 	Result string `json:"result"`
@@ -69,10 +79,10 @@ type UnionOpenOrderQueryContent struct {
 	QueryResp UnionOpenOrderQueryResponse `json:"jd_union_open_order_query_response"`
 }
 
-func NewUnionOpenOrderQueryResponse(content []byte) *OrderResponse {
+func NewUnionOpenOrderQueryResponse(content []byte) *OrderResponseResult {
 	response := &UnionOpenOrderQueryContent{}
 	json.Unmarshal(content, response)
-	respResult := &OrderResponse{}
+	respResult := &OrderResponseResult{}
 	if response.QueryResp.Code == 0 {
 		json.Unmarshal([]byte(response.QueryResp.Result),respResult)
 	}
