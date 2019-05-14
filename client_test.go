@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-pack/openjd"
 	"github.com/go-pack/openjd/requests"
+	"github.com/go-pack/openjd/responses"
 	"github.com/spf13/viper"
 	"testing"
 )
@@ -35,6 +36,6 @@ func TestClient(t *testing.T) {
 		return
 	}
 	println(string(content))
-	resp := NewUnionOpenOrderQueryResponse(content)
+	resp := responses.NewUnionOpenOrderQueryResponse(content)
 	println(resp.RequestId)
 }

@@ -2,11 +2,10 @@ package responses
 
 import (
 	"encoding/json"
-	"github.com/go-pack/openjd"
 )
 
 type OrderResponse struct {
-	openjd.BaseResponse
+	BaseResponse
 	FinishTime uint64 `json:"finishTime"`
 	OrderId uint64 `json:"orderId"`
 	OrderTime uint64 `json:"orderTime"`
