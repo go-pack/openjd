@@ -20,7 +20,6 @@ func init()  {
 	}
 }
 func TestClient(t *testing.T) {
-	println(viper.GetString("APP_JD_KEY") )
 	session := ""
 	topClient := openjd.NewJdClient(viper.GetString("APP_JD_KEY") , viper.GetString("APP_JD_SECRET") )
 	request := requests.NewJdUnionOpenOrderRequest()
@@ -36,4 +35,6 @@ func TestClient(t *testing.T) {
 		return
 	}
 	println(string(content))
+	resp := NewUnionOpenOrderQueryResponse(content)
+	println(resp.RequestId)
 }
